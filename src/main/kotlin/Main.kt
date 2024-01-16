@@ -8,8 +8,7 @@ fun makeArea(size: Int, countMine: Int): MutableList<MutableList<String>> {
     var (col, row, mod) = readln().split(" ")
     while (countMine != area.sumOf { it.filter { it == "X" }.size } || mod != "free") {
         if (mod == "mine") {
-            if (areaWithMine[row.toInt() - 1][col.toInt() - 1] == "*") areaWithMine[row.toInt() - 1][col.toInt() - 1] =
-                "."
+            if (areaWithMine[row.toInt() - 1][col.toInt() - 1] == "*") areaWithMine[row.toInt() - 1][col.toInt() - 1] = "."
             else areaWithMine[row.toInt() - 1][col.toInt() - 1] = "*"
             println(makePresentableArea(areaWithMine))
             println("Set/unset mines marks or claim a cell as free:")
@@ -44,8 +43,14 @@ fun makeArea(size: Int, countMine: Int): MutableList<MutableList<String>> {
 
 fun makePresentableArea(area: MutableList<MutableList<String>>): String {
     var i = 1
-    return area.joinToString("\n", prefix = " │123456789│\n—│—————————│\n", postfix = "\n—│—————————│")
-    { it.joinToString("", postfix = "|", prefix = "${i++}|") }
+    var prefix = ""
+    var line= "——│"
+    for (index in area.indices) {
+        prefix += String.format("%3s", "${index + 1} ")
+        line +="———"
+    }
+    return area.joinToString("\n", prefix = "  │$prefix│\n$line│\n", postfix = "\n$line│")
+    { it.joinToString("  ", postfix = " |", prefix = "${String.format("%2s", (i++))}| ") }
 }
 
 fun giveHelp(area: MutableList<MutableList<String>>): MutableList<MutableList<String>> {
@@ -195,6 +200,8 @@ fun setLogic(
 }
 
 fun main() {
+    println("What size is the field? (enter one number)")
+    val size= readln().toInt()
     println("How many mines do you want on the field?")
-    makeArea(9, readln().toInt())
+    makeArea(size, readln().toInt())
 }
