@@ -1,6 +1,18 @@
 import kotlin.random.Random
 
-fun makeArea(size: Int, countMine: Int): MutableList<MutableList<String>> {
+fun makeArea(): MutableList<MutableList<String>> {
+    println("What size is the field? (enter one number)")
+    var size = readln().toInt()
+    while (size > 99) {
+        println("The field size must be less than 100. Please try again")
+        size = readln().toInt()
+    }
+    println("How many mines do you want on the field?")
+    var countMine = readln().toInt()
+    while (countMine >= size * size) {
+        println("The number of mines has been exceeded. Enter a valid value (the number of mines must be less than the size of the field in the square")
+        countMine = readln().toInt()
+    }
     val area = MutableList(size) { MutableList(size) { "." } }
     val areaWithMine = MutableList(size) { MutableList(size) { "." } }
     println(makePresentableArea(area))
@@ -8,7 +20,8 @@ fun makeArea(size: Int, countMine: Int): MutableList<MutableList<String>> {
     var (col, row, mod) = readln().split(" ")
     while (countMine != area.sumOf { it.filter { it == "X" }.size } || mod != "free") {
         if (mod == "mine") {
-            if (areaWithMine[row.toInt() - 1][col.toInt() - 1] == "*") areaWithMine[row.toInt() - 1][col.toInt() - 1] = "."
+            if (areaWithMine[row.toInt() - 1][col.toInt() - 1] == "*") areaWithMine[row.toInt() - 1][col.toInt() - 1] =
+                "."
             else areaWithMine[row.toInt() - 1][col.toInt() - 1] = "*"
             println(makePresentableArea(areaWithMine))
             println("Set/unset mines marks or claim a cell as free:")
@@ -30,24 +43,19 @@ fun makeArea(size: Int, countMine: Int): MutableList<MutableList<String>> {
                 area[i.first][i.second] = "X"
         }
 
-        if (countMine == area.sumOf { it.filter { it == "X" }.size }) setLogic(
-            area,
-            areaWithMine,
-            col.toInt(),
-            row.toInt()
-        )
+        if (countMine == area.sumOf { it.filter { it == "X" }.size }) setLogic(area, areaWithMine, col.toInt(), row.toInt())
     }
-
     return area
 }
+
 
 fun makePresentableArea(area: MutableList<MutableList<String>>): String {
     var i = 1
     var prefix = ""
-    var line= "——│"
+    var line = "——│"
     for (index in area.indices) {
         prefix += String.format("%3s", "${index + 1} ")
-        line +="———"
+        line += "———"
     }
     return area.joinToString("\n", prefix = "  │$prefix│\n$line│\n", postfix = "\n$line│")
     { it.joinToString("  ", postfix = " |", prefix = "${String.format("%2s", (i++))}| ") }
@@ -200,8 +208,5 @@ fun setLogic(
 }
 
 fun main() {
-    println("What size is the field? (enter one number)")
-    val size= readln().toInt()
-    println("How many mines do you want on the field?")
-    makeArea(size, readln().toInt())
+    makeArea()
 }
